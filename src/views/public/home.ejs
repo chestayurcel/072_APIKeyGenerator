@@ -1,49 +1,61 @@
 <%- include('../partials/header', { title: title }) %>
 
-<div class="max-w-xl mx-auto bg-white rounded-lg shadow-xl p-8">
-    <h1 class="text-3xl font-bold text-gray-800 mb-6">Dapatkan API Key Anda</h1>
+<div class="max-w-2xl mx-auto bg-white rounded-lg shadow-xl p-10">
+    <h1 class="text-4xl font-bold text-gray-800 mb-8">Dapatkan API Key Anda</h1>
     
-    
+    <% 
+      let errorMessage = null;
+      let successMessage = typeof message !== 'undefined' ? message : null;
+
+      if (successMessage && successMessage.startsWith('Error:')) {
+          errorMessage = successMessage.substring(7);
+          successMessage = null;
+      }
+    %>
+
     <%- include('../partials/message', { 
-        message: typeof message !== 'undefined' ? message : null, 
-        error: (typeof message !== 'undefined' && message && message.startsWith('Error')) ? message.substring(7) : null 
+        message: successMessage, 
+        error: errorMessage
     }) %>
 
     <form id="userForm" action="/save" method="POST">
-        <div class="space-y-4">
-            <div>
-                <label for="firstname" class="block text-sm font-medium text-gray-700">First Name</label>
-                <input type="text" id="firstname" name="firstname" required
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-            </div>
-            <div>
-                <label for="lastname" class="block text-sm font-medium text-gray-700">Last Name</label>
-                <input type="text" id="lastname" name="lastname" required
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-            </div>
-            <div>
-                <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
-                <input type="email" id="email" name="email" required
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm">
-            </div>
+        <div class="space-y-6">
             
-            <hr class="my-6">
+            <div>
+                <label for="firstname" class="block text-lg font-semibold text-gray-700 mb-2">First Name</label>
+                <input type="text" id="firstname" name="firstname" required
+                        class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-lg p-3 border">
+            </div>
 
             <div>
-                <label for="api_key" class="block text-sm font-medium text-gray-700">API Key</label>
-                <div class="flex mt-1 space-x-2">
+                <label for="lastname" class="block text-lg font-semibold text-gray-700 mb-2">Last Name</label>
+                <input type="text" id="lastname" name="lastname" required
+                        class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-lg p-3 border">
+            </div>
+
+            <div>
+                <label for="email" class="block text-lg font-semibold text-gray-700 mb-2">Email</label>
+                <input type="email" id="email" name="email" required
+                        class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-lg p-3 border">
+            </div>
+            
+            <hr class="my-8 border-t-2">
+
+            <div>
+                <label for="api_key" class="block text-lg font-semibold text-gray-700 mb-2">API Key</label>
+                <div class="flex mt-1 space-x-3">
                     <input type="text" id="api_key" name="api_key" readonly required
-                            class="block w-full rounded-md border-gray-300 shadow-sm bg-gray-50 sm:text-sm">
+                            class="block w-full rounded-md border-gray-300 shadow-sm bg-gray-50 text-lg p-3 border font-mono text-gray-600">
                     <button type="button" id="generateBtn"
-                            class="whitespace-nowrap rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700">
+                            class="whitespace-nowrap rounded-md bg-indigo-600 px-6 py-3 text-lg font-semibold text-white shadow-sm hover:bg-indigo-700 transition-colors">
                         Generate
                     </button>
                 </div>
             </div>
 
             <button type="submit" id="saveBtn" disabled
-                    class="w-full rounded-md bg-green-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-700 disabled:bg-gray-300">
-                Save
+                    class="w-full rounded-md bg-green-600 px-6 py-4 text-xl font-bold text-white shadow-lg hover:bg-green-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-all mt-4">
+                Simpan Data
             </button>
         </div>
     </form>
@@ -51,14 +63,11 @@
 
 <script>
     document.getElementById('generateBtn').addEventListener('click', function() {
-        // Generate 32 char random hex string
-        // Ini aman dilakukan di sisi klien (browser)
         var randomKey = Array.from(window.crypto.getRandomValues(new Uint8Array(16)))
             .map(b => b.toString(16).padStart(2, '0'))
             .join('');
         
         document.getElementById('api_key').value = randomKey;
-        // Mengaktifkan tombol "Save" setelah key di-generate
         document.getElementById('saveBtn').disabled = false;
     });
 </script>
